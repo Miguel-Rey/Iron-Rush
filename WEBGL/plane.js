@@ -85,6 +85,10 @@ var modelViewMatrix =  mat4.create();
 mat4.translate(modelViewMatrix,     // destination matrix
 modelViewMatrix,     // matrix to translate
 this.world.setCamera([0.0, 0.0, 0.0]));  // amount to translate
+mat4.rotate(modelViewMatrix,  // destination matrix
+    modelViewMatrix,  // matrix to rotate
+    this.world.rotation,   // amount to rotate in radians
+    [0, 0, 0.1]);       // axis to rotate around
 
  //Position
 

@@ -14,4 +14,7 @@ function World(gl, engine){
         ]
     }
     this.depth = 50;
+    this.rotation = 0;
+    this.rotateDirection = 0;
+    this.rotateTension= 1;
 }
