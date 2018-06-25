@@ -10,10 +10,10 @@ Plane.prototype.buffer = function(gl){
     var position = [
            
            // Bottom face
-           -20.0, -1, -20.0,
-           20.0, -1, -20.0,
-           20.0, -1,  20.0,
-           -20.0, -1,  20.0,
+           -this.world.depth, 0, -this.world.depth,
+           this.world.depth, 0, -this.world.depth,
+           this.world.depth, 0,  this.world.depth,
+           -this.world.depth, 0,  this.world.depth,
 
     ]
 
@@ -69,7 +69,7 @@ var fieldOfView = this.world.fieldOfView
 var aspect = this.world.aspect
 var zNear = this.world.zNear
 var zFar = this.world.zFar
-var projectionMatrix = this.world.projectionMatrix
+var projectionMatrix = mat4.create();
 
 //Set perspective matrix
 
@@ -79,13 +79,12 @@ mat4.perspective(projectionMatrix,
     zNear,
     zFar);
 
-var modelViewMatrix = this.world.modelViewMatrix
-var squareRotation = 1;
+var modelViewMatrix =  mat4.create();
 
 //Transformation matrix
 mat4.translate(modelViewMatrix,     // destination matrix
 modelViewMatrix,     // matrix to translate
-[0.0, -1.0, 0.0]);  // amount to translate
+this.world.setCamera([0.0, 0.0, 0.0]));  // amount to translate
 
  //Position
 
@@ -155,5 +154,4 @@ modelViewMatrix,     // matrix to translate
     gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
 }
 
- rotation += delta;
 }

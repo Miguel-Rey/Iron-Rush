@@ -1,5 +1,6 @@
-function Cube(engine){
+function Cube(engine, world){
     this.engine = engine;
+    this.world = world;
 }
 
 Cube.prototype.buffer = function(gl){
@@ -8,40 +9,40 @@ Cube.prototype.buffer = function(gl){
     
         var positionCube = [
              // Front face
-                -1.0, -1.0,  1.0,
-                1.0, -1.0,  1.0,
-                1.0,  1.0,  1.0,
-                -1.0,  1.0,  1.0,
+                -1.0, 0.0,  1.0,
+                1.0, 0.0,  1.0,
+                1.0,  2.0,  1.0,
+                -1.0,  2.0,  1.0,
                 
                 // Back face
-                -1.0, -1.0, -1.0,
-                -1.0,  1.0, -1.0,
-                1.0,  1.0, -1.0,
-                1.0, -1.0, -1.0,
+                -1.0, 0.0, -1.0,
+                -1.0,  2.0, -1.0,
+                1.0,  2.0, -1.0,
+                1.0, 0.0, -1.0,
                 
                 // Top face
-                -1.0,  1.0, -1.0,
-                -1.0,  1.0,  1.0,
-                1.0,  1.0,  1.0,
-                1.0,  1.0, -1.0,
+                -1.0,  2.0, -1.0,
+                -1.0,  2.0,  1.0,
+                1.0,  2.0,  1.0,
+                1.0,  2.0, -1.0,
                 
                 // Bottom face
-                -1.0, -1.0, -1.0,
-                1.0, -1.0, -1.0,
-                1.0, -1.0,  1.0,
-                -1.0, -1.0,  1.0,
+                -1.0, 0.0, -1.0,
+                1.0, 0.0, -1.0,
+                1.0, 0.0,  1.0,
+                -1.0, 0.0,  1.0,
                 
                 // Right face
-                1.0, -1.0, -1.0,
-                1.0,  1.0, -1.0,
-                1.0,  1.0,  1.0,
-                1.0, -1.0,  1.0,
+                1.0, 0.0, -1.0,
+                1.0,  2.0, -1.0,
+                1.0,  2.0,  1.0,
+                1.0, 0.0,  1.0,
                 
                 // Left face
-                -1.0, -1.0, -1.0,
-                -1.0, -1.0,  1.0,
-                -1.0,  1.0,  1.0,
-                -1.0,  1.0, -1.0,
+                -1.0, 0.0, -1.0,
+                -1.0, 0.0,  1.0,
+                -1.0,  2.0,  1.0,
+                -1.0,  2.0, -1.0,
         ]
     
         var positionBuffer = gl.createBuffer();
@@ -102,10 +103,10 @@ Cube.prototype.draw = function(gl, programInfo, buffers, delta, zoomIn){
 
     //Perspective matrix variables
 
-    var fieldOfView = 45 * Math.PI / 180;   // in radians
-    var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-    var zNear = 0.1;
-    var zFar = 100.0;
+    var fieldOfView = this.world.fieldOfView
+    var aspect = this.world.aspect
+    var zNear = this.world.zNear
+    var zFar = this.world.zFar
     var projectionMatrix = mat4.create();
 
     //Set perspective matrix
@@ -121,7 +122,7 @@ Cube.prototype.draw = function(gl, programInfo, buffers, delta, zoomIn){
     //Transformation matrix
     mat4.translate(modelViewMatrix,     // destination matrix
     modelViewMatrix,     // matrix to translate
-    [0.0, -1.0, zoomIn]);  // amount to translate
+    this.world.setCamera([0.0, 0.0, zoomIn]));  // amount to translate
 
     //Buffer interpretation settings
 

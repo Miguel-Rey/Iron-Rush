@@ -32,11 +32,13 @@ window.onload = function(){
     var cBuffer = cube.buffer(gl);
     var plane = new Plane(engine, world);
     var pBuffer = plane.buffer(gl);
+
+    //ZONA DE TEST
     
 
     /////ANIMATION
     var squareRotation = 0;
-    var zoomIn = -4.0;
+    var zoomIn = -world.depth;
     var prevTime = 0;
     function render(time) {
 
@@ -55,16 +57,15 @@ window.onload = function(){
         cube.draw(gl, cube.engine.programInfo, cBuffer, delta, zoomIn)
         requestAnimationFrame(render);
         squareRotation -= 0.01;
+        zoomIn += 0.1;
     }
 
     requestAnimationFrame(render);
     
     document.addEventListener('keydown', function(e){
-        if(e.keyCode == 40){
-            zoomIn -= 0.1;
-        }
-        if(e.keyCode == 38){
-            zoomIn += 0.1;
+        console.log(e.keyCode);
+        if(e.keyCode == 32){
+        
         }
     });
 
