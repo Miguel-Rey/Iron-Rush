@@ -53,6 +53,7 @@ window.onload = function(){
     var cBuffer = cube.buffer(gl);
     var plane = new Plane(engine, world);
     var pBuffer = plane.buffer(gl);
+    var hud = document.getElementById('hud');
 
     //CUBE RELATED
 
@@ -202,9 +203,11 @@ window.onload = function(){
     document.addEventListener('keydown', function(e){
         if(e.keyCode == 39){
             turnRight();
+            hud.setAttribute('style','transform: rotateY(-3deg)')
         }
         if(e.keyCode == 37){
             turnLeft();
+            hud.setAttribute('style','transform: rotateY(3deg)')
         }
         if(e.keyCode == 32){
             isStarted = true;
@@ -214,6 +217,7 @@ window.onload = function(){
 
     document.addEventListener('keyup', function(e){
         world.rotateDirection = 0;
+        hud.setAttribute('style','transform: rotateY(0deg)')
     });
 
 }

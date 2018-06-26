@@ -4,6 +4,7 @@ html, body{
     width: 100%;
     height: 100%;
     font-family: 'Russo One', sans-serif;
+    perspective: 1000px;
 }
 canvas{
     margin: 0 auto;
@@ -19,23 +20,25 @@ canvas{
     margin: 0 auto;
     z-index: 2;
     font-size: 36px;
+    transform: rotateY(0deg);
+    transition: transform 0.6s ease-in-out;
 }
 .hud-wrap > *{
     position: absolute;
+    width: 300px;
 }
 #speed{
     bottom: 50px;
     left: 50px;
-    transform: skew(0deg, -7deg);
+    transform: rotate3d(-0.5,1,0,40deg);
 }
 #distance{
     bottom: 50px;
     right: 50px;
-    transform: skew(0deg, 7deg);
+    transform: rotate3d(0.5,1,0,40deg);
 }
 #score{
     top: 50px;
     right: 50px;
-
-    transform: skew(0deg, -7deg);
+    transform: rotate3d(0.5,-1,0,40deg);
 }
