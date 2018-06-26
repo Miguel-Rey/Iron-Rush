@@ -129,6 +129,7 @@ window.onload = function(){
             if(arrayCube[i].zoom > -2.5 && arrayCube[i].zoom < 2.5){
                 if(world.camera[0] > arrayCube[i].position -2.5 && world.camera[0] < arrayCube[i].position + 2.5){
                     alert('Collision!')
+                    isStarted = false;
                 }
             }
         }
@@ -138,6 +139,7 @@ window.onload = function(){
     var prevTime = 0;
     var counter = 0;
     var counterToCreateCube = 10;
+    var isStarted = false;
 
     function render(time) {
         checkCollision();
@@ -158,8 +160,9 @@ window.onload = function(){
         prevTime = time;
         drawAllCubes(delta);
         plane.draw(gl, plane.engine.programInfo, pBuffer, delta)
-        
-        requestAnimationFrame(render);
+        if(isStarted == true){
+            requestAnimationFrame(render);
+        }
     }
 
     //EVENTS / CONTROLS
@@ -172,6 +175,7 @@ window.onload = function(){
             turnLeft();
         }
         if(e.keyCode == 32){
+            isStarted = true;
             requestAnimationFrame(render);
         }
     });
