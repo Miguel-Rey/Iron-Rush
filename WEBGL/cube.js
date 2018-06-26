@@ -57,12 +57,12 @@ Cube.prototype.buffer = function(gl){
         //Color 
     
         var faceColors = [
-            [1.0,  1.0,  1.0,  1.0],    // Front face: white
-            [1.0,  1.0,  1.0,  1.0],    // Back face: red
-            [1.0,  1.0,  1.0,  1.0],    // Top face: green
-            [1.0,  1.0,  1.0,  1.0],    // Bottom face: blue
-            [1.0,  1.0,  1.0,  1.0],    // Right face: yellow
-            [1.0,  1.0,  1.0,  1.0],    // Left face: purple
+            this.world.setColors(this.world.cubeColors),    // Front face: white
+            this.world.setColors(this.world.cubeColors),    // Back face: red
+            this.world.setColors(this.world.cubeColors),    // Top face: green
+            this.world.setColors(this.world.cubeColors),    // Bottom face: blue
+            this.world.setColors(this.world.cubeColors),    // Right face: yellow
+            this.world.setColors(this.world.cubeColors),    // Left face: purple
         ];
         var colors = [];
     

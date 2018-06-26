@@ -20,7 +20,7 @@ function World(gl, engine){
     this.rotateTension= 1;
     this.planeColor = [255, 255, 255];
     this.horizonColor = [0.8, 0.8, 0.8, 1];
-    this.cubeColors = [237, 237, 237];
+    this.cubeColors = [255, 255, 255];
     this.setColors = function(arr){
         var value = [];
         value[0] = arr[0] / 255;

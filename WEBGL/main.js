@@ -22,7 +22,7 @@ window.onload = function(){
 
       highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
       highp vec3 directionalLightColor = vec3(1, 1, 1);
-      highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
+      highp vec3 directionalVector = normalize(vec3(-0.85, 0.8, 0.75));
 
       highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
 
@@ -116,10 +116,26 @@ window.onload = function(){
     function move(){
         if(world.camera[0] < world.width - 40 && world.rotateDirection ==="right"){
             world.camera[0] += 0.3;
-            console.log(world.camera[0]);
        }
        if(world.camera[0] > -1* (world.width - 40) && world.rotateDirection ==="left"){
             world.camera[0] -= 0.3;
+        }
+    }
+
+    //COLOR CHANGES
+
+    function changeColors(){
+        if (counter % 500 == 0){
+            world.cubeColors = [Math.random()*255,Math.random()+255,Math.random()*255];
+            world.horizonColor = [Math.random(),Math.random(),Math.random(),1];
+            world.planeColor = [Math.random()*255,Math.random()*255,Math.random()*255];
+            cBuffer = cube.buffer(gl);
+            pBuffer = plane.buffer(gl);
+            var colorA = Math.floor(Math.random()*255);
+            var colorB = Math.floor(Math.random()*255);
+            var colorC = Math.floor(Math.random()*255);
+            hud.setAttribute('style','color: rgb('+ colorA+', '+colorB+', '+colorC+')');
+
         }
     }
 
@@ -180,6 +196,7 @@ window.onload = function(){
         updateScore();
         updateSpeed();
         updateDistance();
+        changeColors();
 
         gl.clearColor(world.horizonColor[0],world.horizonColor[1],world.horizonColor[2],world.horizonColor[3]);  // Clear to black, fully opaque
         gl.clearDepth(1.0);                 // Clear everything
