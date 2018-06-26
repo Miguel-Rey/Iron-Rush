@@ -1,51 +1,51 @@
-function Cube(engine, world, height, position, zoom){
+function Cube(engine, world, position, zoom){
     this.engine = engine;
     this.world = world;
-    this.height = height;
+    this.height = 20;
     this.position = position;
     this.zoom = zoom;
 }
 
 Cube.prototype.buffer = function(gl){
-
+        
         //Position Cube
     
         var positionCube = [
              // Front face
-                -1.0, 0.0* this.height,  1.0,
-                1.0, 0.0* this.height,  1.0,
-                1.0,  2.0* this.height,  1.0,
-                -1.0,  2.0* this.height,  1.0,
+                -2.0, 0.0* this.height,  2.0,
+                2.0, 0.0* this.height,  2.0,
+                2.0,  2.0* this.height,  2.0,
+                -2.0,  2.0* this.height,  2.0,
                 
                 // Back face
-                -1.0, 0.0* this.height, -1.0,
-                -1.0,  2.0* this.height, -1.0,
-                1.0,  2.0* this.height, -1.0,
-                1.0, 0.0* this.height, -1.0,
+                -2.0, 0.0* this.height, -2.0,
+                -2.0,  2.0* this.height, -2.0,
+                2.0,  2.0* this.height, -2.0,
+                2.0, 0.0* this.height, -2.0,
                 
                 // Top face
-                -1.0,  2.0* this.height, -1.0,
-                -1.0,  2.0* this.height,  1.0,
-                1.0,  2.0* this.height,  1.0,
-                1.0,  2.0* this.height, -1.0,
+                -2.0,  2.0* this.height, -2.0,
+                -2.0,  2.0* this.height,  2.0,
+                2.0,  2.0* this.height,  2.0,
+                2.0,  2.0* this.height, -2.0,
                 
                 // Bottom face
-                -1.0, 0.0* this.height, -1.0,
-                1.0, 0.0* this.height, -1.0,
-                1.0, 0.0* this.height,  1.0,
-                -1.0, 0.0* this.height,  1.0,
+                -2.0, 0.0* this.height, -2.0,
+                2.0, 0.0* this.height, -2.0,
+                2.0, 0.0* this.height,  2.0,
+                -2.0, 0.0* this.height,  2.0,
                 
                 // Right face
-                1.0, 0.0* this.height, -1.0,
-                1.0,  2.0* this.height, -1.0,
-                1.0,  2.0* this.height,  1.0,
-                1.0, 0.0* this.height,  1.0,
+                2.0, 0.0* this.height, -2.0,
+                2.0,  2.0* this.height, -2.0,
+                2.0,  2.0* this.height,  2.0,
+                2.0, 0.0* this.height,  2.0,
                 
                 // Left face
-                -1.0, 0.0* this.height, -1.0,
-                -1.0, 0.0* this.height,  1.0,
-                -1.0,  2.0* this.height,  1.0,
-                -1.0,  2.0* this.height, -1.0,
+                -2.0, 0.0* this.height, -2.0,
+                -2.0, 0.0* this.height,  2.0,
+                -2.0,  2.0* this.height,  2.0,
+                -2.0,  2.0* this.height, -2.0,
         ]
     
         var positionBuffer = gl.createBuffer();
@@ -93,11 +93,59 @@ Cube.prototype.buffer = function(gl){
     
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
             new Uint16Array(indices), gl.STATIC_DRAW)
+
+        //Normals
+
+        var normalBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
     
+        var vertexNormals = [
+            // Front
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+        
+            // Back
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+        
+            // Top
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+        
+            // Bottom
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+        
+            // Right
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+        
+            // Left
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0
+          ];
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals),
+        gl.STATIC_DRAW);
+        
+
         return {
                 position: positionBuffer,
                 color: colorBuffer,
-                indices: indexBuffer
+                indices: indexBuffer,
+                normal: normalBuffer,
         };
     
 }
@@ -121,13 +169,12 @@ Cube.prototype.draw = function(gl, programInfo, buffers, delta, zoomIn){
         zFar);
 
     var modelViewMatrix = mat4.create();
-
+        
 
     //Set camera matrix
     var cameraAngleRadians = this.world.rotation * Math.PI / 180;
-    var radius = 10;
-    var cameraMatrix = mat4.rotateZ(mat4.create(), modelViewMatrix, cameraAngleRadians);
-    mat4.translate(cameraMatrix, cameraMatrix, this.world.camera);
+    var cameraMatrix = mat4.translate(mat4.create(), modelViewMatrix, this.world.camera);
+    mat4.rotateZ(cameraMatrix, cameraMatrix, cameraAngleRadians);
     
     //View matrix
     
@@ -143,6 +190,12 @@ Cube.prototype.draw = function(gl, programInfo, buffers, delta, zoomIn){
     modelViewMatrix,     // matrix to translate
     [0.0 + this.position, -3, zoomIn]);  // amount to translate
 
+
+    //Set light matrix
+
+    var normalMatrix = mat4.create();
+    mat4.invert(normalMatrix, modelViewMatrix);
+    mat4.transpose(normalMatrix, normalMatrix);
     
 
     //Buffer interpretation settings
@@ -207,6 +260,30 @@ Cube.prototype.draw = function(gl, programInfo, buffers, delta, zoomIn){
             programInfo.uniformLocations.modelViewMatrix,
             false,
             modelViewMatrix);
+        gl.uniformMatrix4fv(
+            programInfo.uniformLocations.normalMatrix,
+            false,
+            normalMatrix);
+
+    //Normals
+
+    {
+        const numComponents = 3;
+        const type = gl.FLOAT;
+        const normalize = false;
+        const stride = 0;
+        const offset = 0;
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal);
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.vertexNormal,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset);
+        gl.enableVertexAttribArray(
+            programInfo.attribLocations.vertexNormal);
+      }
     
     {
         var type = gl.UNSIGNED_SHORT;

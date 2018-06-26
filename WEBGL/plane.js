@@ -10,10 +10,10 @@ Plane.prototype.buffer = function(gl){
     var position = [
            
            // Bottom face
-           -this.world.depth, 0, -this.world.depth,
-           this.world.depth, 0, -this.world.depth,
-           this.world.depth, 0,  this.world.depth,
-           -this.world.depth, 0,  this.world.depth,
+           -this.world.width, 0, -this.world.width,
+           this.world.width, 0, -this.world.width,
+           this.world.width, 0,  this.world.width,
+           -this.world.width, 0,  this.world.width,
 
     ]
 
@@ -53,10 +53,28 @@ Plane.prototype.buffer = function(gl){
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,
         new Uint16Array(indices), gl.STATIC_DRAW)
 
+    //Normals
+
+    var normalBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+
+    var vertexNormals = [
+        // Bottom
+        0.0,  1.0,  0.0,
+        0.0,  1.0,  0.0,
+        0.0,  1.0,  0.0,
+        0.0,  1.0,  0.0,
+      ];
+
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals),
+    gl.STATIC_DRAW);
+
+
     return {
             position: positionBuffer,
             color: colorBuffer,
-            indices: indexBuffer
+            indices: indexBuffer,
+            normal: normalBuffer,
     };
 
 }
@@ -84,9 +102,9 @@ var modelViewMatrix =  mat4.create();
 //Set camera matrix
 
 var cameraAngleRadians = this.world.rotation * Math.PI / 180;
-var radius = 10;
-var cameraMatrix = mat4.rotateZ(mat4.create(), modelViewMatrix, cameraAngleRadians);
-mat4.translate(cameraMatrix, cameraMatrix, this.world.camera);
+var cameraMatrix = mat4.translate(mat4.create(), modelViewMatrix, this.world.camera);
+mat4.rotateZ(cameraMatrix, cameraMatrix, cameraAngleRadians);
+
 
 
 //View matrix
@@ -101,6 +119,12 @@ var viewProjectionMatrix = mat4.multiply(projectionMatrix, projectionMatrix, vie
 mat4.translate(modelViewMatrix,     // destination matrix
 modelViewMatrix,     // matrix to translate
 [0.0, -3.0, 0.0]);  // amount to translate
+
+//Set light matrix
+
+var normalMatrix = mat4.create();
+mat4.invert(normalMatrix, modelViewMatrix);
+mat4.transpose(normalMatrix, normalMatrix);
 
  //Position
 
@@ -162,6 +186,26 @@ modelViewMatrix,     // matrix to translate
         programInfo.uniformLocations.modelViewMatrix,
         false,
         modelViewMatrix);
+
+    //Normals
+
+    {
+        const numComponents = 3;
+        const type = gl.FLOAT;
+        const normalize = false;
+        const stride = 0;
+        const offset = 0;
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal);
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.vertexNormal,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset);
+        gl.enableVertexAttribArray(
+            programInfo.attribLocations.vertexNormal);
+      }
 
 {
     var type = gl.UNSIGNED_SHORT;

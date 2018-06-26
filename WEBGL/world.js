@@ -4,7 +4,7 @@ function World(gl, engine){
     this.fieldOfView = 45 * Math.PI / 180;  // in radians
     this.aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     this.zNear = 0.1;
-    this.zFar = 100.0;
+    this.zFar = 300.0;
     this.camera = [0, 0, 0];
     this.setCamera = function(arr){
         return [
@@ -13,7 +13,8 @@ function World(gl, engine){
             arr[2]- this.camera[2]
         ]
     }
-    this.depth = 100;
+    this.depth = 300;
+    this.width = 300;
     this.rotation = 0;
     this.rotateDirection = 0;
     this.rotateTension= 1;
@@ -28,4 +29,7 @@ function World(gl, engine){
         value[3] = 1.0;
         return value;
     }
+    this.maxRotation = 20;
+    this.speed = 1;
+    this.aceleration = 0.00005;
 }

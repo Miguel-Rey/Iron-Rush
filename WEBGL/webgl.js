@@ -17,10 +17,12 @@ function Engine(gl, vsSource, fsSource){
         attribLocations: {
             vertexPosition: gl.getAttribLocation(this.shaderProgram, 'aVertexPosition'),
             vertexColor: gl.getAttribLocation(this.shaderProgram, 'aVertexColor'),
+            vertexNormal: gl.getAttribLocation(this.shaderProgram, 'aVertexNormal'),
         },
         uniformLocations: {
             projectionMatrix: gl.getUniformLocation(this.shaderProgram, 'uProjectionMatrix'),
-            modelViewMatrix: gl.getUniformLocation(this.shaderProgram, 'uModelViewMatrix')
+            modelViewMatrix: gl.getUniformLocation(this.shaderProgram, 'uModelViewMatrix'),
+            normalMatrix: gl.getUniformLocation(this.shaderProgram, 'uNormalMatrix'),
         }
     };
 
