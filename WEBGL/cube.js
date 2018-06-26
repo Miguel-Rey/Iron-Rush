@@ -3,7 +3,7 @@ function Cube(engine, world, height, position, zoom){
     this.world = world;
     this.height = height;
     this.position = position;
-    this.zoom = zoom
+    this.zoom = zoom;
 }
 
 Cube.prototype.buffer = function(gl){
@@ -57,7 +57,7 @@ Cube.prototype.buffer = function(gl){
         //Color 
     
         var faceColors = [
-            [1.0,  1.0,  1.0,  1.0],    // Front face: white
+            [0.5,  1.0,  1.0,  1.0],    // Front face: white
             [1.0,  0.0,  0.0,  1.0],    // Back face: red
             [0.0,  1.0,  0.0,  1.0],    // Top face: green
             [0.0,  0.0,  1.0,  1.0],    // Bottom face: blue
@@ -122,15 +122,28 @@ Cube.prototype.draw = function(gl, programInfo, buffers, delta, zoomIn){
 
     var modelViewMatrix = mat4.create();
 
+
+    //Set camera matrix
+    var cameraAngleRadians = this.world.rotation * Math.PI / 180;
+    var radius = 10;
+    var cameraMatrix = mat4.rotateZ(mat4.create(), modelViewMatrix, cameraAngleRadians);
+    mat4.translate(cameraMatrix, cameraMatrix, this.world.camera);
+    
+    //View matrix
+    
+    var viewMatrix = mat4.invert(cameraMatrix, cameraMatrix);
+
+    //Compute
+
+    var viewProjectionMatrix = mat4.multiply(projectionMatrix, projectionMatrix, viewMatrix);
+
+
     //Transformation matrix
     mat4.translate(modelViewMatrix,     // destination matrix
     modelViewMatrix,     // matrix to translate
-    this.world.setCamera([0.0 + this.position, 0.0, zoomIn]));  // amount to translate
+    [0.0 + this.position, -3, zoomIn]);  // amount to translate
 
-    mat4.rotate(modelViewMatrix,  // destination matrix
-        modelViewMatrix,  // matrix to rotate
-        this.world.rotation,   // amount to rotate in radians
-        [0, 0, 0.1]);       // axis to rotate around
+    
 
     //Buffer interpretation settings
 
@@ -189,7 +202,7 @@ Cube.prototype.draw = function(gl, programInfo, buffers, delta, zoomIn){
         gl.uniformMatrix4fv(
             programInfo.uniformLocations.projectionMatrix,
             false,
-            projectionMatrix);
+            viewProjectionMatrix);
         gl.uniformMatrix4fv(
             programInfo.uniformLocations.modelViewMatrix,
             false,

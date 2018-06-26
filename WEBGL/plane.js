@@ -26,7 +26,7 @@ Plane.prototype.buffer = function(gl){
     //Color 
 
     var faceColors = [
-            [0.0,  0.0,  0.5,  1.0],    // Bottom face: blue
+            this.world.setColors(this.world.planeColor),    // Bottom face: blue
     ];
     var colors = [];
 
@@ -81,14 +81,26 @@ mat4.perspective(projectionMatrix,
 
 var modelViewMatrix =  mat4.create();
 
+//Set camera matrix
+
+var cameraAngleRadians = this.world.rotation * Math.PI / 180;
+var radius = 10;
+var cameraMatrix = mat4.rotateZ(mat4.create(), modelViewMatrix, cameraAngleRadians);
+mat4.translate(cameraMatrix, cameraMatrix, this.world.camera);
+
+
+//View matrix
+
+var viewMatrix = mat4.invert(cameraMatrix, cameraMatrix);
+
+//Compute
+
+var viewProjectionMatrix = mat4.multiply(projectionMatrix, projectionMatrix, viewMatrix);
+
 //Transformation matrix
 mat4.translate(modelViewMatrix,     // destination matrix
 modelViewMatrix,     // matrix to translate
-this.world.setCamera([0.0, 0.0, 0.0]));  // amount to translate
-mat4.rotate(modelViewMatrix,  // destination matrix
-    modelViewMatrix,  // matrix to rotate
-    this.world.rotation,   // amount to rotate in radians
-    [0, 0, 0.1]);       // axis to rotate around
+[0.0, -3.0, 0.0]);  // amount to translate
 
  //Position
 
@@ -145,7 +157,7 @@ mat4.rotate(modelViewMatrix,  // destination matrix
     gl.uniformMatrix4fv(
         programInfo.uniformLocations.projectionMatrix,
         false,
-        projectionMatrix);
+        viewProjectionMatrix);
     gl.uniformMatrix4fv(
         programInfo.uniformLocations.modelViewMatrix,
         false,

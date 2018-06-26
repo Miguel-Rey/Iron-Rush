@@ -52,29 +52,34 @@ window.onload = function(){
     var counter = 0;
     var planeTurn = 0;
     function render(time) {
+        checkCollision();
         counter++
-        if(counter > 20){
+        if(counter > 5){
             counter = 0;
             addCube();
         }
         if(world.rotateDirection ==="right"){
-            world.rotation -= 0.005;
-            world.camera[0] += 0.3;
+            //world.rotation -= 0.5;
+            if(world.camera[0] < world.depth / 3){
+                 world.camera[0] += 0.3;
+            }
         }
         if(world.rotateDirection ==="left"){
-            world.rotation += 0.005;
-            world.camera[0] -= 0.3;
+            //world.rotation += 0.5;
+            if(world.camera[0] > world.depth / -3){
+                world.camera[0] -= 0.3;
+            }
         }
         if(world.rotateDirection === 0 && world.rotation !== 0){
             if(world.rotation> 0){
-                world.rotation -= 0.005;
+                world.rotation -= 0.5;
             }else if(world.rotation < 0){
-                world.rotation += 0.005;
+                world.rotation += 0.5;
             }
         }
 
 
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
+        gl.clearColor(world.horizonColor[0],world.horizonColor[1],world.horizonColor[2],world.horizonColor[3]);  // Clear to black, fully opaque
         gl.clearDepth(1.0);                 // Clear everything
         gl.enable(gl.DEPTH_TEST);           // Enable depth testing
         gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
@@ -92,8 +97,8 @@ window.onload = function(){
 
     
     function addCube(){
-        var randomHeight = Math.random()+3;
-        var randPosition = Math.random()*40-20;
+        var randomHeight = Math.random()+6;
+        var randPosition = Math.random()*world.depth*2 - world.depth;
         arrayCube.push(new Cube(engine, world, randomHeight, randPosition, -world.depth+5));
     }
 
@@ -103,6 +108,17 @@ window.onload = function(){
 
     function turnLeft(){
         world.rotateDirection = "left";
+    }
+
+
+    function checkCollision(){
+        for(var i= 0; i < arrayCube.length; i++){
+            if(arrayCube[i].zoom > -1 && arrayCube[i].zoom < 1){
+                if(world.camera[0] > arrayCube[i].position -1 && world.camera[0] < arrayCube[i].position + 1){
+                    alert('Collision!')
+                }
+            }
+        }
     }
 
     document.addEventListener('keydown', function(e){
