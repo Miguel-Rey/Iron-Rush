@@ -135,6 +135,35 @@ window.onload = function(){
         }
     }
 
+    //HUD
+
+    function truncateDecimals (number) {
+        return Math[number < 0 ? 'ceil' : 'floor'](number);
+    };
+
+    var score = 0;
+    var scoreHold = document.getElementById('score');
+
+    function updateScore(){
+        score++
+        scoreHold.innerText = "SCORE: "+ truncateDecimals(score);
+    }
+    var speed = 20;
+    var speedHold = document.getElementById('speed');
+
+    function updateSpeed(){
+        speed += 0.1;
+        speedHold.innerText = "SPEED: "+ truncateDecimals(speed);
+    }
+
+    var distance = 0;
+    var distanceHold = document.getElementById('distance');
+
+    function updateDistance(){
+        distance += 0.3;
+        distanceHold.innerText = "DISTANCE: "+ truncateDecimals(distance);
+    }
+
     /////ANIMATION
     var prevTime = 0;
     var counter = 0;
@@ -147,6 +176,9 @@ window.onload = function(){
         addCubes();
         move();
         turnWorld();
+        updateScore();
+        updateSpeed();
+        updateDistance();
 
         gl.clearColor(world.horizonColor[0],world.horizonColor[1],world.horizonColor[2],world.horizonColor[3]);  // Clear to black, fully opaque
         gl.clearDepth(1.0);                 // Clear everything

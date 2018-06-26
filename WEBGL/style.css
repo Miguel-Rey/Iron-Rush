@@ -3,10 +3,39 @@ html, body{
     padding: 0;
     width: 100%;
     height: 100%;
+    font-family: 'Russo One', sans-serif;
 }
 canvas{
     margin: 0 auto;
     position: absolute;
     left: 0;
     right: 0;
+    top:0;
+}
+.hud-wrap{
+    width: 1200px;
+    height: 700px;
+    position: relative;
+    margin: 0 auto;
+    z-index: 2;
+    font-size: 36px;
+}
+.hud-wrap > *{
+    position: absolute;
+}
+#speed{
+    bottom: 50px;
+    left: 50px;
+    transform: skew(0deg, -7deg);
+}
+#distance{
+    bottom: 50px;
+    right: 50px;
+    transform: skew(0deg, 7deg);
+}
+#score{
+    top: 50px;
+    right: 50px;
+
+    transform: skew(0deg, -7deg);
 }
