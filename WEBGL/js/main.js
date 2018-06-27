@@ -1,68 +1,70 @@
 window.onload = function(){
-    var vsSource = `
-    attribute vec4 aVertexPosition;
-    attribute vec4 aVertexColor;
-    attribute vec3 aVertexNormal;
 
-    uniform mat4 uNormalMatrix;
-    uniform mat4 uModelViewMatrix;
-    uniform mat4 uProjectionMatrix;
+    //============VAR DECLARATIONS================
 
-    varying lowp vec4 vColor;
-    varying highp vec3 vLighting;
-
-    void main(void) {
-      gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-
-      // Color
-
-      vColor = aVertexColor;
-
-      // Apply lighting effect
-
-      highp vec3 ambientLight = vec3(0.4, 0.4, 0.4);
-      highp vec3 directionalLightColor = vec3(1, 1, 1);
-      highp vec3 directionalVector = normalize(vec3(-0.85, 0.8, 0.75));
-
-      highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
-
-      highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
-      vLighting = ambientLight + (directionalLightColor * directional);
-    }
-  `;
-
-    // Fragment shader program
-
-    var fsSource = `
-        varying lowp vec4 vColor;
-        varying highp vec3 vLighting;
-
-        void main(void) {
-            gl_FragColor = vec4(vColor.rgb * vLighting, 1.0);
-        }
-    `;
-
-    //DECLARATIONS
 
     
-    var canvas = document.getElementById('glCanvas');
-    var gl = canvas.getContext("webgl");
-    var engine = new Engine(gl, vsSource, fsSource);
-    var world = new World(gl, engine);
-    var cube = new Cube(engine, world);
-    var cBuffer = cube.buffer(gl);
-    var plane = new Plane(engine, world);
-    var pBuffer = plane.buffer(gl);
+    //select html elements
+
     var hud = document.getElementById('hud');
     var initial = document.getElementById('initial');
     var gameover = document.getElementById('gameover'); 
     var finalDistanceHold = document.getElementById('final-distance');
     var finalScoreHold = document.getElementById('final-score');
+    var canvas = document.getElementById('glCanvas');
+
+    //set gl context
+
+    var gl = canvas.getContext("webgl");
+
+    //create objects
+
+    var engine = new Engine(gl);
+    var world = new World(gl, engine);
+    var cube = new Cube(engine, world);
+    var plane = new Plane(engine, world);
     var line = new Line(engine, world);
+    var keyboard = {
+        space: 32,
+        left: 37,
+        right: 39
+    }
+
+    //create buffers
+
+    var cBuffer = cube.buffer(gl);
+    var pBuffer = plane.buffer(gl);
     var lBuffer = line.buffer(gl);
 
+    //3d elements arrays declaration
 
-    //reset
+    var arrayLines = [];
+    var arrayCube = [];
+    
+    //Fill line array
+    var totalLines = world.numberOfLines;
+    for (var i= -totalLines / 2; i < totalLines / 2; i++ ){
+        arrayLines.push(new Line(engine, world, (world.width/ totalLines * i)))
+    }
+
+    //Set cube collision range
+    var collisionSize = world.cubeSize +2;
+
+    //Game settings
+    var invertCounter = 0;
+    var isGameOver = false;
+    var isStarted = false;
+    var prevTime = 0;
+    var counter = 0;
+    var counterToCreateCube = 10;
+
+
+
+    //=====FUNCTION DECLARATION===============
+
+
+
+    //RESET
 
     function reset(){
         arrayCube = [];
@@ -84,13 +86,6 @@ window.onload = function(){
     }
 
     //LINES IN GROUND
-
-    var arrayLines = []
-    var totalLines = 70;
-    for (var i= -totalLines / 2; i < totalLines / 2; i++ ){
-        console.log(world.width / totalLines * i);
-        arrayLines.push(new Line(engine, world, (world.width/ totalLines * i)))
-    }
 
     function drawLines(delta){
         for(var i= 0; i < arrayLines.length; i++){
@@ -125,12 +120,6 @@ window.onload = function(){
         }
     }
 
-    function acelerate(i){
-        world.Zspeed += world.aceleration;
-        arrayCube[i].zoom += world.Zspeed;
-    }
-
-    var arrayCube = [];
     function drawAllCubes(delta){
         for(var i= 0; i < arrayCube.length; i++){
             if(arrayCube[i].zoom > 50){
@@ -139,6 +128,11 @@ window.onload = function(){
             acelerate(i);
             arrayCube[i].draw(gl, arrayCube[i].engine.programInfo, cBuffer, delta, arrayCube[i].zoom);
         }
+    }
+
+    function acelerate(i){
+        world.Zspeed += world.aceleration;
+        arrayCube[i].zoom += world.Zspeed;
     }
 
     // TURN/MOVEMENT RELATED
@@ -166,7 +160,9 @@ window.onload = function(){
             }
         }
     }
-    var invertCounter = 0;
+
+    //INVERT WORLD
+
     function invertRotation(){
         invertCounter++;
         if(invertCounter > 1500 && world.inversionRotation < 180 && invertCounter < 3000){
@@ -214,7 +210,6 @@ window.onload = function(){
     }
 
     //COLLISIONS
-    var collisionSize = world.cubeSize +2;
     function checkCollision(){
         for(var i= 0; i < arrayCube.length; i++){
             if(arrayCube[i].zoom > -collisionSize && arrayCube[i].zoom < collisionSize){
@@ -234,6 +229,7 @@ window.onload = function(){
         isGameOver = true;
 
     }
+
 
     //HUD
 
@@ -264,14 +260,17 @@ window.onload = function(){
     }
 
     /////ANIMATION
-    var prevTime = 0;
-    var counter = 0;
-    var counterToCreateCube = 10;
-    var isStarted = false;
-    var isGameOver = false;
 
     function render(time) {
+
+        //Calculate delta
         
+        time *= 0.001; // to seconds
+        var delta = time - prevTime;
+        prevTime = time;
+
+        //Calculate changes
+
         addCubes();
         move();
         turnWorld();
@@ -281,20 +280,23 @@ window.onload = function(){
         updateDistance();
         changeColors();
         checkCollision();
+
+        //Clear canvas
+
         gl.clearColor(world.horizonColor[0],world.horizonColor[1],world.horizonColor[2],world.horizonColor[3]);  // Clear to black, fully opaque
         gl.clearDepth(1.0);                 // Clear everything
         gl.enable(gl.DEPTH_TEST);           // Enable depth testing
         gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
-
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         
-        time *= 0.001; // to seconds
-        var delta = time - prevTime;
-        prevTime = time;
+        //Draw
+
         plane.draw(gl, plane.engine.programInfo, pBuffer, delta);
-        
         drawAllCubes(delta);
         drawLines(delta);
+
+        //Call next frame
+
         if(isStarted == true){
             requestAnimationFrame(render);
         }
@@ -303,8 +305,8 @@ window.onload = function(){
     //EVENTS / CONTROLS
 
     document.addEventListener('keydown', function(e){
-        e.preventDefault();
-        if(e.keyCode == 39){
+        if(e.keyCode == keyboard.right){
+            e.preventDefault();
             if(world.isUpsideDown){
                 turnLeft();
             }else{
@@ -313,7 +315,8 @@ window.onload = function(){
             hud.classList.add('right'); 
             hud.classList.remove('left');
         }
-        if(e.keyCode == 37){
+        if(e.keyCode == keyboard.left){
+            e.preventDefault();
             if(world.isUpsideDown){
                 turnRight();
             }else{
@@ -322,7 +325,8 @@ window.onload = function(){
             hud.classList.add('left');
             hud.classList.remove('right');
         }
-        if(e.keyCode == 32 && !isGameOver && !isStarted){
+        if(e.keyCode == keyboard.space && !isGameOver && !isStarted){
+            e.preventDefault();
             isStarted = true;
             requestAnimationFrame(render);
             hud.classList.add('show');
@@ -330,13 +334,16 @@ window.onload = function(){
             world.music.play();
         }
         if(e.keyCode == 32 && isGameOver){
+            e.preventDefault();
             reset();
         }
     });
 
     document.addEventListener('keyup', function(e){
-        world.rotateDirection = 0;
-        hud.classList.remove('left');
-        hud.classList.remove('right');
+        if(e.keyCode == keyboard.left || e.keyCode == keyboard.right){
+            world.rotateDirection = 0;
+            hud.classList.remove('left');
+            hud.classList.remove('right');
+        }
     });
 }
