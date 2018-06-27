@@ -32,7 +32,6 @@ canvas{
 .hud-wrap > *{
     position: absolute;
     width: 400px;
-    text-align: center;
 }
 .hud-wrap.right{
     transform: rotateY(-4deg);
@@ -51,12 +50,12 @@ canvas{
 }
 #distance{
     bottom: 50px;
-    right: 50px;
+    right: 0px;
     transform: rotate3d(0.5,1,0,40deg);
 }
 #score{
     top: 50px;
-    right: 50px;
+    right: 0px;
     transform: rotate3d(0.5,-1,0,40deg);
 }
 

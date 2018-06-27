@@ -58,6 +58,45 @@ window.onload = function(){
     var gameover = document.getElementById('gameover'); 
     var finalDistanceHold = document.getElementById('final-distance');
     var finalScoreHold = document.getElementById('final-score');
+    var line = new Line(engine, world);
+    var lBuffer = line.buffer(gl);
+
+
+    //reset
+
+    function reset(){
+        arrayCube = [];
+        world.Zspeed = 3;
+        world.Xspeed = 1.5;
+        counter = 0;
+        invertCounter = 0;
+        initial.classList.remove('hide');
+        gameover.classList.add('hide');
+        hud.classList.remove('show');
+        isGameOver = false;
+        isStarted = false;
+        score = 0;
+        distance = 0;
+        speed = world.Zspeed;
+        world.inversionRotation = 0;
+        world.isUpsideDown = false;
+        world.camera[0] = 0;
+    }
+
+    //LINES IN GROUND
+
+    var arrayLines = []
+    var totalLines = 70;
+    for (var i= -totalLines / 2; i < totalLines / 2; i++ ){
+        console.log(world.width / totalLines * i);
+        arrayLines.push(new Line(engine, world, (world.width/ totalLines * i)))
+    }
+
+    function drawLines(delta){
+        for(var i= 0; i < arrayLines.length; i++){
+            arrayLines[i].draw(gl, arrayLines[i].engine.programInfo, lBuffer, delta, arrayLines[i].Xposition);
+        }
+    }
 
     //CUBE RELATED
 
@@ -130,16 +169,16 @@ window.onload = function(){
     var invertCounter = 0;
     function invertRotation(){
         invertCounter++;
-        if(invertCounter > 1000 && world.inversionRotation < 180 && invertCounter < 2000){
+        if(invertCounter > 1500 && world.inversionRotation < 180 && invertCounter < 3000){
             world.isUpsideDown = true;
-            world.inversionRotation += 3.7:
+            world.inversionRotation += 2.5;
         }
-        if(invertCounter > 2000 && world.inversionRotation > 0 && invertCounter < 3000){
+        if(invertCounter > 3000 && world.inversionRotation > 0 && invertCounter < 4500){
             console.log(world.inversionRotation);
             world.isUpsideDown = false;
-            world.inversionRotation -= 3.7;
+            world.inversionRotation -= 2.5;
         }
-        if(invertCounter > 3000){
+        if(invertCounter > 4500){
             invertCounter = 0;
         }
     }
@@ -165,15 +204,17 @@ window.onload = function(){
             world.cubeColors = [colorA-20,colorB-20,colorC-20];
             world.horizonColor = [colorA / 255 , colorB /255 , colorC /255 ,1];
             world.planeColor = [colorA+30 , colorB+30, colorC+30];
+            world.lineColor = [colorA-50, colorB-50, colorC-50];
             cBuffer = cube.buffer(gl);
             pBuffer = plane.buffer(gl);
+            lBuffer = line.buffer(gl);
             hud.setAttribute('style','color: rgb('+ (colorA -80 )+', '+(colorB - 80)+', '+(colorC -80)+')');
 
         }
     }
 
     //COLLISIONS
-    var collisionSize = world.cubeSize +1;
+    var collisionSize = world.cubeSize +2;
     function checkCollision(){
         for(var i= 0; i < arrayCube.length; i++){
             if(arrayCube[i].zoom > -collisionSize && arrayCube[i].zoom < collisionSize){
@@ -204,7 +245,7 @@ window.onload = function(){
     var scoreHold = document.getElementById('score');
 
     function updateScore(){
-        score += 35;
+        score += 13;
         scoreHold.innerText = "SCORE: "+ truncateDecimals(score);
     }
     var speed = world.Zspeed;
@@ -250,8 +291,10 @@ window.onload = function(){
         time *= 0.001; // to seconds
         var delta = time - prevTime;
         prevTime = time;
+        plane.draw(gl, plane.engine.programInfo, pBuffer, delta);
+        
         drawAllCubes(delta);
-        plane.draw(gl, plane.engine.programInfo, pBuffer, delta)
+        drawLines(delta);
         if(isStarted == true){
             requestAnimationFrame(render);
         }
@@ -284,9 +327,10 @@ window.onload = function(){
             requestAnimationFrame(render);
             hud.classList.add('show');
             initial.classList.add('hide');
+            world.music.play();
         }
         if(e.keyCode == 32 && isGameOver){
-            location.reload();
+            reset();
         }
     });
 
