@@ -1,7 +1,7 @@
 function Cube(engine, world, position, zoom){
     this.engine = engine;
     this.world = world;
-    this.height = 20;
+    this.height = 50;
     this.position = position;
     this.zoom = zoom;
 }
@@ -12,40 +12,40 @@ Cube.prototype.buffer = function(gl){
     
         var positionCube = [
              // Front face
-                -2.0, 0.0* this.height,  2.0,
-                2.0, 0.0* this.height,  2.0,
-                2.0,  2.0* this.height,  2.0,
-                -2.0,  2.0* this.height,  2.0,
+                -this.world.cubeSize, 0.0* this.height,  this.world.cubeSize,
+                this.world.cubeSize, 0.0* this.height,  this.world.cubeSize,
+                this.world.cubeSize,  2.0* this.height,  this.world.cubeSize,
+                -this.world.cubeSize,  2.0* this.height,  this.world.cubeSize,
                 
                 // Back face
-                -2.0, 0.0* this.height, -2.0,
-                -2.0,  2.0* this.height, -2.0,
-                2.0,  2.0* this.height, -2.0,
-                2.0, 0.0* this.height, -2.0,
+                -this.world.cubeSize, 0.0* this.height, -this.world.cubeSize,
+                -this.world.cubeSize,  2.0* this.height, -this.world.cubeSize,
+                this.world.cubeSize,  2.0* this.height, -this.world.cubeSize,
+                this.world.cubeSize, 0.0* this.height, -this.world.cubeSize,
                 
                 // Top face
-                -2.0,  2.0* this.height, -2.0,
-                -2.0,  2.0* this.height,  2.0,
-                2.0,  2.0* this.height,  2.0,
-                2.0,  2.0* this.height, -2.0,
+                -this.world.cubeSize,  2.0* this.height, -this.world.cubeSize,
+                -this.world.cubeSize,  2.0* this.height,  this.world.cubeSize,
+                this.world.cubeSize,  2.0* this.height,  this.world.cubeSize,
+                this.world.cubeSize,  2.0* this.height, -this.world.cubeSize,
                 
                 // Bottom face
-                -2.0, 0.0* this.height, -2.0,
-                2.0, 0.0* this.height, -2.0,
-                2.0, 0.0* this.height,  2.0,
-                -2.0, 0.0* this.height,  2.0,
+                -this.world.cubeSize, 0.0* this.height, -this.world.cubeSize,
+                this.world.cubeSize, 0.0* this.height, -this.world.cubeSize,
+                this.world.cubeSize, 0.0* this.height,  this.world.cubeSize,
+                -this.world.cubeSize, 0.0* this.height,  this.world.cubeSize,
                 
                 // Right face
-                2.0, 0.0* this.height, -2.0,
-                2.0,  2.0* this.height, -2.0,
-                2.0,  2.0* this.height,  2.0,
-                2.0, 0.0* this.height,  2.0,
+                this.world.cubeSize, 0.0* this.height, -this.world.cubeSize,
+                this.world.cubeSize,  2.0* this.height, -this.world.cubeSize,
+                this.world.cubeSize,  2.0* this.height,  this.world.cubeSize,
+                this.world.cubeSize, 0.0* this.height,  this.world.cubeSize,
                 
                 // Left face
-                -2.0, 0.0* this.height, -2.0,
-                -2.0, 0.0* this.height,  2.0,
-                -2.0,  2.0* this.height,  2.0,
-                -2.0,  2.0* this.height, -2.0,
+                -this.world.cubeSize, 0.0* this.height, -this.world.cubeSize,
+                -this.world.cubeSize, 0.0* this.height,  this.world.cubeSize,
+                -this.world.cubeSize,  2.0* this.height,  this.world.cubeSize,
+                -this.world.cubeSize,  2.0* this.height, -this.world.cubeSize,
         ]
     
         var positionBuffer = gl.createBuffer();
@@ -172,7 +172,7 @@ Cube.prototype.draw = function(gl, programInfo, buffers, delta, zoomIn){
         
 
     //Set camera matrix
-    var cameraAngleRadians = this.world.rotation * Math.PI / 180;
+    var cameraAngleRadians = (this.world.rotation * Math.PI / 180) + (this.world.inversionRotation * Math.PI / 180);
     var cameraMatrix = mat4.translate(mat4.create(), modelViewMatrix, this.world.camera);
     mat4.rotateZ(cameraMatrix, cameraMatrix, cameraAngleRadians);
     

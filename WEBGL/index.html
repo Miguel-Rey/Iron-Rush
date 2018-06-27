@@ -16,10 +16,22 @@
     <script src="main.js"></script>
 </head>
 <body>
+    <div id="initial">
+        <div class="title"></div>
+        <div class="tooltip">Press space to start</div>
+    </div>
+    <div id="gameover" class="hide">
+        <div class="final-data-wrap">
+            <div class="title">OUT!</div>
+            <div id="final-score"></div>
+            <div id="final-distance"></div>
+            <div class="play-again">Press space to play again</div>
+        </div>
+    </div>
     <div class="hud-wrap" id="hud">
-        <div id="speed">SPEED: 312</div>
-        <div id="distance">DISTANCE: 403.2</div>
-        <div id="score">SCORE: 32</div>
+        <div id="speed">SPEED: 0</div>
+        <div id="distance">DISTANCE: 0</div>
+        <div id="score">SCORE: 0</div>
     </div>
     <canvas id="glCanvas" width='1200px' height="700px"></canvas>
 </body>

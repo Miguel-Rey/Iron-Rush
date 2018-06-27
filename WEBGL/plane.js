@@ -10,10 +10,10 @@ Plane.prototype.buffer = function(gl){
     var position = [
            
            // Bottom face
-           -this.world.width, 0, -this.world.width,
-           this.world.width, 0, -this.world.width,
-           this.world.width, 0,  this.world.width,
-           -this.world.width, 0,  this.world.width,
+           -this.world.width, 0, -this.world.depth,
+           this.world.width, 0, -this.world.depth,
+           this.world.width, 0,  this.world.depth,
+           -this.world.width, 0,  this.world.depth,
 
     ]
 
@@ -101,7 +101,7 @@ var modelViewMatrix =  mat4.create();
 
 //Set camera matrix
 
-var cameraAngleRadians = this.world.rotation * Math.PI / 180;
+var cameraAngleRadians = (this.world.rotation * Math.PI / 180) + (this.world.inversionRotation * Math.PI / 180);
 var cameraMatrix = mat4.translate(mat4.create(), modelViewMatrix, this.world.camera);
 mat4.rotateZ(cameraMatrix, cameraMatrix, cameraAngleRadians);
 

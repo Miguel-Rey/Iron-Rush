@@ -4,7 +4,7 @@ function World(gl, engine){
     this.fieldOfView = 45 * Math.PI / 180;  // in radians
     this.aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     this.zNear = 0.1;
-    this.zFar = 300.0;
+    this.zFar = 500.0;
     this.camera = [0, 3, 0];
     this.setCamera = function(arr){
         return [
@@ -13,11 +13,11 @@ function World(gl, engine){
             arr[2]- this.camera[2]
         ]
     }
-    this.depth = 300;
-    this.width = 300;
+    this.depth = 500;
+    this.width = 2000;
     this.rotation = 0;
     this.rotateDirection = 0;
-    this.rotateTension= 1;
+    this.inversionRotation = 0;
     this.planeColor = [255, 255, 255];
     this.horizonColor = [0.8, 0.8, 0.8, 1];
     this.cubeColors = [255, 255, 255];
@@ -30,7 +30,8 @@ function World(gl, engine){
         return value;
     }
     this.maxRotation = 20;
-    this.speed = 2;
-    this.aceleration = 0.00005;
-    this.cubeSize = 2;
+    this.Zspeed = 3;
+    this.Xspeed = 1.5;
+    this.aceleration = 0.0001;
+    this.cubeSize = 10.5;
 }
