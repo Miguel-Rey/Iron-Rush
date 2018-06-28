@@ -23,6 +23,7 @@ function World(gl, engine){
     this.depth = 3000;
     this.width = 4000;
     this.cubeSize = 10.5;
+    this.collisionSize = this.cubeSize +2;
     this.numberOfLines = 71;
 
     //turn related
