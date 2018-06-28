@@ -166,8 +166,12 @@ Game.prototype.changeColors = function(){
         var colorB = Math.floor(Math.random()*255);
         var colorC = Math.floor(Math.random()*255);
         this.world.cubeColors = [colorA-20,colorB-20,colorC-20];
+        if(colorA + colorB + colorC > 150*3){
+            this.world.cubeColors = [colorA+40,colorB+40,colorC+40];
+            
+        }
         this.world.horizonColor = [colorA / 255 , colorB /255 , colorC /255 ,1];
-        this.world.planeColor = [colorA+30 , colorB+30, colorC+30];
+        this.world.planeColor = [colorA+50 , colorB+50, colorC+50];
         this.world.lineColor = [colorA-50, colorB-50, colorC-50];
         this.cube.cBuffer = this.cube.buffer(this.gl);
         this.plane.pBuffer = this.plane.buffer(this.gl);
