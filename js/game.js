@@ -41,6 +41,7 @@ Game.prototype.reset = function(){
     this.world.isUpsideDown = false;
     this.world.camera[0] = 0;
     this.counterToCreateCube = 10;
+    this.world.collisionZFactor = 23;
 }
 
 //LINES 
@@ -140,6 +141,7 @@ Game.prototype.invertRotation = function(){
 //ACELERATION 
 
 Game.prototype.acelerate = function(i){
+    this.world.collisionZFactor += this.world.aceleration;
     this.world.Zspeed += this.world.aceleration;
     this.arrayCube[i].zoom += this.world.Zspeed;
 }
@@ -179,8 +181,12 @@ Game.prototype.changeColors = function(){
 
 Game.prototype.checkCollision = function(){
     for(var i= 0; i < this.arrayCube.length; i++){
-        if(this.arrayCube[i].zoom > -this.world.collisionSize && this.arrayCube[i].zoom < this.world.collisionSize){
+        if((this.arrayCube[i].zoom + this.world.cubeSize > -this.world.collisionZFactor)  && (this.arrayCube[i].zoom  <  3)){
             if(this.world.camera[0] > this.arrayCube[i].position -this.world.collisionSize && this.world.camera[0] < this.arrayCube[i].position + this.world.collisionSize){
+                console.log('ZCUBE:' + this.arrayCube[i].zoom + this.world.cubeSize);
+                console.log('ZME:' +this.world.collisionZFactor + this.world.collisionSize)
+                console.log('XME:' +this.world.camera[0]);
+                console.log('XCUBE:' + this.arrayCube[i].position);
                 this.collisionConsecuences();
             }
         }

@@ -63,6 +63,8 @@ window.onload = function(){
         game.drawAllCubes(delta);
         game.drawLines(delta);
 
+        console.log(world.collisionZFactor);
+
         //Call next frame
 
         if(game.isStarted == true){
