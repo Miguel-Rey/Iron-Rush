@@ -1,15 +1,8 @@
 window.onload = function(){
-
-    //============VAR DECLARATIONS================
     
-    //select html elements
-
-    var hudWrap = document.getElementById('hud');
-    var initial = document.getElementById('initial');
-    var canvas = document.getElementById('glCanvas');
-
     //set gl context
 
+    var canvas = document.getElementById('glCanvas');
     var gl = canvas.getContext("webgl");
 
     //create objects
@@ -19,52 +12,18 @@ window.onload = function(){
     var cube = new Cube(engine, world);
     var plane = new Plane(engine, world);
     var line = new Line(engine, world);
+    var hud = new Hud(world);
+    var game = new Game(world, gl, cube, plane, line, hud);
+
     var keyboard = {
         space: 32,
         left: 37,
         right: 39
     }
-    var game = new Game(world, gl, cube, plane, line);
 
-    
-    //Fill line array
-    var totalLines = world.numberOfLines;
-    for (var i= -totalLines / 2; i < totalLines / 2; i++ ){
-        game.arrayLines.push(new Line(engine, world, (world.width/ totalLines * i)))
-    }
+    //Fill the line-array
 
-
-
-    //=====FUNCTION DECLARATION===============
-
-
-    //HUD
-
-    function truncateDecimals (number) {
-        return (Math.floor(number* 10)) / 10;
-    };
-
-    var score = 0;
-    var scoreHold = document.getElementById('score');
-
-    function updateScore(){
-        score += 13;
-        scoreHold.innerText = "SCORE: "+ truncateDecimals(score);
-    }
-    var speed = world.Zspeed;
-    var speedHold = document.getElementById('speed');
-
-    function updateSpeed(){
-        speedHold.innerText = "SPEED: "+ truncateDecimals(30 + world.Zspeed);
-    }
-
-    var distance = 0;
-    var distanceHold = document.getElementById('distance');
-
-    function updateDistance(){
-        distance += 0.3;
-        distanceHold.innerText = "DISTANCE: "+ truncateDecimals(distance);
-    }
+    game.createLines();
 
     /////ANIMATION
 
@@ -84,9 +43,9 @@ window.onload = function(){
         game.move();
         game.turnWorld();
         game.invertRotation();
-        updateScore();
-        updateSpeed();
-        updateDistance();
+        game.hud.updateScore();
+        game.hud.updateSpeed();
+        game.hud.updateDistance();
         game.changeColors();
         game.checkCollision();
 
@@ -121,8 +80,8 @@ window.onload = function(){
             }else{
                 game.turnRight();
             }
-            hudWrap.classList.add('right'); 
-            hudWrap.classList.remove('left');
+            hud.hudWrap.classList.add('right'); 
+            hud.hudWrap.classList.remove('left');
         }
         if(e.keyCode == keyboard.left){
             e.preventDefault();
@@ -131,15 +90,15 @@ window.onload = function(){
             }else{
                 game.turnLeft();
             }
-            hudWrap.classList.add('left');
-            hudWrap.classList.remove('right');
+            hud.hudWrap.classList.add('left');
+            hud.hudWrap.classList.remove('right');
         }
         if(e.keyCode == keyboard.space && !game.isGameOver && !game.isStarted){
             e.preventDefault();
             game.isStarted = true;
             requestAnimationFrame(render);
-            hudWrap.classList.add('show');
-            initial.classList.add('hide');
+            hud.hudWrap.classList.add('show');
+            hud.initial.classList.add('hide');
             world.music.play();
         }
         if(e.keyCode == 32 && game.isGameOver){
@@ -151,8 +110,8 @@ window.onload = function(){
     document.addEventListener('keyup', function(e){
         if(e.keyCode == keyboard.left || e.keyCode == keyboard.right){
             world.rotateDirection = 0;
-            hudWrap.classList.remove('left');
-            hudWrap.classList.remove('right');
+            hud.hudWrap.classList.remove('left');
+            hud.hudWrap.classList.remove('right');
         }
     });
 }

@@ -1,4 +1,4 @@
-function Game(world, gl, cube, plane, line) {
+function Game(world, gl, cube, plane, line, hud) {
     this.world = world;
     this.prevTime = 0;
     this.counter = 0;
@@ -20,6 +20,7 @@ function Game(world, gl, cube, plane, line) {
     this.gameover = document.getElementById('gameover');
     this.hudWrap = document.getElementById('hud');
     this.initial = document.getElementById('initial');
+    this.hud = hud;
 
 
 }
@@ -30,14 +31,14 @@ Game.prototype.reset = function(){
     this.world.Xspeed = 1.5;
     this.counter = 0;
     this.invertCounter = 0;
-    this.initial.classList.remove('hide');
-    this.gameover.classList.add('hide');
-    this.hudWrap.classList.remove('show');
+    this.hud.initial.classList.remove('hide');
+    this.hud.gameover.classList.add('hide');
+    this.hud.hudWrap.classList.remove('show');
     this.isGameOver = false;
     this.isStarted = false;
-    this.score = 0;
-    this.distance = 0;
-    this.speed = this.world.Zspeed;
+    this.hud.score = 0;
+    this.hud.distance = 0;
+    this.hud.speed = this.world.Zspeed;
     this.world.inversionRotation = 0;
     this.world.isUpsideDown = false;
     this.world.camera[0] = 0;
@@ -50,6 +51,12 @@ Game.prototype.drawLines = function(delta){
     for(var i= 0; i < this.arrayLines.length; i++){
         this.arrayLines[i].draw(this.gl, this.arrayLines[i].engine.programInfo, this.line.lBuffer, delta, this.arrayLines[i].Xposition);
     }
+}
+
+Game.prototype.createLines = function(){
+    for (var i= -this.world.numberOfLines / 2; i < this.world.numberOfLines / 2; i++ ){
+        this.arrayLines.push(new Line(this.world.engine, this.world, (this.world.width/ this.world.numberOfLines * i)))
+    }  
 }
 
 //CUBE RELATED
@@ -182,8 +189,8 @@ Game.prototype.checkCollision = function(){
 Game.prototype.collisionConsecuences = function(){
     gameover.classList.remove('hide');
     this.hudWrap.classList.remove('show');
-    this.finalDistanceHold.innerText = "Distance travelled: "+ this.truncateDecimals(distance);
-    this.finalScoreHold.innerText = "Final score: "+ this.truncateDecimals(score);
+    this.finalDistanceHold.innerText = "Distance travelled: "+ this.truncateDecimals(this.hud.distance);
+    this.finalScoreHold.innerText = "Final score: "+ this.truncateDecimals(this.hud.score);
     this.isStarted = false;
     this.isGameOver = true;
 
