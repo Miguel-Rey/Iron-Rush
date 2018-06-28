@@ -21,10 +21,11 @@ function World(gl, engine){
 
     //world specifications
     this.depth = 3000;
-    this.width = 4000;
+    this.width = 8000;
     this.cubeSize = 10.5;
     this.collisionSize = this.cubeSize +2;
-    this.numberOfLines = 71;
+    this.collisionZFactor = 0.01;
+    this.numberOfLines = 31;
 
     //turn related
     this.rotation = 0;
@@ -49,8 +50,8 @@ function World(gl, engine){
 
     //speed related
     this.Zspeed = 3;
-    this.Xspeed = 1.5;
-    this.aceleration = 0.00008;
+    this.Xspeed = 4;
+    this.aceleration = 0.00002;
 
     //music related
     this.music = new Audio ('music/music.mp3');

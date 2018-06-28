@@ -26,7 +26,7 @@ function Game(world, gl, cube, plane, line, hud) {
 Game.prototype.reset = function(){
     this.arrayCube = [];
     this.world.Zspeed = 3;
-    this.world.Xspeed = 1.5;
+    this.world.Xspeed = 4;
     this.counter = 0;
     this.invertCounter = 0;
     this.hud.initial.classList.remove('hide');
@@ -129,7 +129,6 @@ Game.prototype.invertRotation = function(){
         this.world.inversionRotation += 2.5;
     }
     if(this.invertCounter > 3000 && this.world.inversionRotation > 0 && this.invertCounter < 4500){
-        console.log(this.world.inversionRotation);
         this.world.isUpsideDown = false;
         this.world.inversionRotation -= 2.5;
     }
@@ -138,15 +137,16 @@ Game.prototype.invertRotation = function(){
     }
 }
 
-//MOVEMENT RELATED
+//ACELERATION 
 
 Game.prototype.acelerate = function(i){
     this.world.Zspeed += this.world.aceleration;
     this.arrayCube[i].zoom += this.world.Zspeed;
 }
 
+//MOVEMENT
+
 Game.prototype.move = function(){
-    this.world.Xspeed += this.world.aceleration;
     if(this.world.camera[0] < this.world.width - 40 && this.world.rotateDirection ==="right"){
         this.world.camera[0] += this.world.Xspeed;
     }
@@ -188,10 +188,10 @@ Game.prototype.checkCollision = function(){
 }
 
 Game.prototype.collisionConsecuences = function(){
-    gameover.classList.remove('hide');
-    this.hudWrap.classList.remove('show');
-    this.finalDistanceHold.innerText = "Distance travelled: "+ this.truncateDecimals(this.hud.distance);
-    this.finalScoreHold.innerText = "Final score: "+ this.truncateDecimals(this.hud.score);
+    this.hud.gameover.classList.remove('hide');
+    this.hud.hudWrap.classList.remove('show');
+    this.hud.finalDistanceHold.innerText = "Distance travelled: "+ this.truncateDecimals(this.hud.distance);
+    this.hud.finalScoreHold.innerText = "Final score: "+ this.truncateDecimals(this.hud.score);
     this.isStarted = false;
     this.isGameOver = true;
 
