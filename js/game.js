@@ -1,6 +1,17 @@
 function Game(world, gl, cube, plane, line, hud) {
+    
+    //pass other objects
+    this.gl = gl;
     this.world = world;
-    this.prevTime = 0;
+    this.hud = hud;
+    this.cube = cube;
+    this.cube.cBuffer = cube.buffer(this.gl);
+    this.plane = plane;
+    this.plane.pBuffer = plane.buffer(this.gl);
+    this.line = line;
+    this.line.lBuffer = line.buffer(this.gl);
+
+    //game functioning
     this.counter = 0;
     this.counterToCreateCube = 10;
     this.invertCounter = 0;
@@ -8,22 +19,9 @@ function Game(world, gl, cube, plane, line, hud) {
     this.isGameOver = false;
     this.arrayLines = [];
     this.arrayCube = [];
-    this.gl = gl;
-    this.cube = cube;
-    this.cube.cBuffer = cube.buffer(this.gl);
-    this.plane = plane;
-    this.plane.pBuffer = plane.buffer(this.gl);
-    this.line = line;
-    this.line.lBuffer = line.buffer(this.gl);
-    this.finalDistanceHold = document.getElementById('final-distance');
-    this.finalScoreHold = document.getElementById('final-score');
-    this.gameover = document.getElementById('gameover');
-    this.hudWrap = document.getElementById('hud');
-    this.initial = document.getElementById('initial');
-    this.hud = hud;
-
-
 }
+
+//RESET
 
 Game.prototype.reset = function(){
     this.arrayCube = [];
@@ -45,7 +43,7 @@ Game.prototype.reset = function(){
     this.counterToCreateCube = 10;
 }
 
-//LINES IN GROUND
+//LINES 
 
 Game.prototype.drawLines = function(delta){
     for(var i= 0; i < this.arrayLines.length; i++){
@@ -59,7 +57,7 @@ Game.prototype.createLines = function(){
     }  
 }
 
-//CUBE RELATED
+//CUBES
 
 Game.prototype.addCubes = function(){
     this.counter++;
@@ -96,12 +94,7 @@ Game.prototype.drawAllCubes = function(delta){
     }
 }
 
-Game.prototype.acelerate = function(i){
-    this.world.Zspeed += this.world.aceleration;
-    this.arrayCube[i].zoom += this.world.Zspeed;
-}
-
-// TURN/MOVEMENT RELATED
+// TURN RELATED
 
 Game.prototype.turnRight = function(){
     this.world.rotateDirection = "right";
@@ -145,6 +138,13 @@ Game.prototype.invertRotation = function(){
     }
 }
 
+//MOVEMENT RELATED
+
+Game.prototype.acelerate = function(i){
+    this.world.Zspeed += this.world.aceleration;
+    this.arrayCube[i].zoom += this.world.Zspeed;
+}
+
 Game.prototype.move = function(){
     this.world.Xspeed += this.world.aceleration;
     if(this.world.camera[0] < this.world.width - 40 && this.world.rotateDirection ==="right"){
@@ -170,12 +170,13 @@ Game.prototype.changeColors = function(){
         this.cube.cBuffer = this.cube.buffer(this.gl);
         this.plane.pBuffer = this.plane.buffer(this.gl);
         this.line.lBuffer = this.line.buffer(this.gl);
-        this.hudWrap.setAttribute('style','color: rgb('+ (colorA -80 )+', '+(colorB - 80)+', '+(colorC -80)+')');
+        this.hud.hudWrap.setAttribute('style','color: rgb('+ (colorA -80 )+', '+(colorB - 80)+', '+(colorC -80)+')');
 
     }
 }
 
 //COLLISIONS
+
 Game.prototype.checkCollision = function(){
     for(var i= 0; i < this.arrayCube.length; i++){
         if(this.arrayCube[i].zoom > -this.world.collisionSize && this.arrayCube[i].zoom < this.world.collisionSize){
