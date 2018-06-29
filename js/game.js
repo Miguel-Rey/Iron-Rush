@@ -1,4 +1,4 @@
-function Game(world, gl, cube, plane, line, hud) {
+function Game(world, gl, cube, plane, line, hLine, hud) {
     
     //pass other objects
     this.gl = gl;
@@ -10,6 +10,8 @@ function Game(world, gl, cube, plane, line, hud) {
     this.plane.pBuffer = plane.buffer(this.gl);
     this.line = line;
     this.line.lBuffer = line.buffer(this.gl);
+    this.hLine = hLine;
+    this.hLine.hlBuffer = hLine.buffer(this.gl);
 
     //game functioning
     this.counter = 0;
@@ -19,6 +21,7 @@ function Game(world, gl, cube, plane, line, hud) {
     this.isGameOver = false;
     this.arrayLines = [];
     this.arrayCube = [];
+    this.arrayhLines = [];
 }
 
 //RESET
@@ -49,6 +52,12 @@ Game.prototype.reset = function(){
 Game.prototype.drawLines = function(delta){
     for(var i= 0; i < this.arrayLines.length; i++){
         this.arrayLines[i].draw(this.gl, this.arrayLines[i].engine.programInfo, this.line.lBuffer, delta, this.arrayLines[i].Xposition);
+    }
+}
+
+Game.prototype.hLine = function(delta){
+    for(var i =0; i < this.arrayhLines.length; i++){
+        this.arrayhLines[i].draw(this.gl, this.arrayhLines[i].engine.programInfo, this.hLine.hlBuffer, this.arrayhLines[i].zoom);
     }
 }
 

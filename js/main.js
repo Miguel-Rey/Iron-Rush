@@ -12,8 +12,9 @@ window.onload = function(){
     var cube = new Cube(engine, world);
     var plane = new Plane(engine, world);
     var line = new Line(engine, world);
+    var hLine = new HLine(engine, world);
     var hud = new Hud(world);
-    var game = new Game(world, gl, cube, plane, line, hud);
+    var game = new Game(world, gl, cube, plane, line, hLine, hud);
 
     var keyboard = {
         space: 32,
@@ -60,10 +61,9 @@ window.onload = function(){
         //Draw
 
         game.plane.draw(gl, plane.engine.programInfo, game.plane.pBuffer, delta);
+        game.hLine.draw(gl, hLine.engine.programInfo, game.hLine.hlBuffer, -15);
         game.drawAllCubes(delta);
         game.drawLines(delta);
-
-        console.log(world.collisionZFactor);
 
         //Call next frame
 

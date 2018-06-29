@@ -25,7 +25,7 @@ function World(gl, engine){
     this.cubeSize = 10.5;
     this.collisionSize = this.cubeSize +2;
     this.collisionZFactor = 23;
-    this.numberOfLines = 31;
+    this.numberOfLines = 51;
 
     //turn related
     this.rotation = 0;
